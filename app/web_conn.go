@@ -70,6 +70,12 @@ func (a *App) NewWebConn(ws net.Conn, session model.Session, t i18n.TranslateFun
 		})
 	}
 
+	// Disable Nagle.
+	tcpConn, ok := ws.(*net.TCPConn)
+	if ok {
+		tcpConn.SetNoDelay(false)
+	}
+
 	wc := &WebConn{
 		App:                a,
 		send:               make(chan model.WebSocketMessage, sendQueueSize),
